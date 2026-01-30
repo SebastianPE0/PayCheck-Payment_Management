@@ -24,7 +24,8 @@ class AdminActivity : AppCompatActivity() {
         // 2. Vincular la tarjeta de Clientes (Provisional)
         val cardClientes = findViewById<MaterialCardView>(R.id.cardGestionClientes)
         cardClientes.setOnClickListener {
-            Toast.makeText(this, "Módulo de Clientes en desarrollo", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, GestionClientesActivity::class.java)
+            startActivity(intent)
         }
     }
 }

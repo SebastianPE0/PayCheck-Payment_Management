@@ -31,7 +31,7 @@ class GestionClientesActivity : AppCompatActivity() {
 
     private fun consultarClientes() {
         // Consultamos solo los que tienen rol cliente
-        db.collection("usuarios")
+        db.collection("Usuarios")
             .whereEqualTo("rol", "cliente")
             .addSnapshotListener { value, error ->
                 if (error != null) return@addSnapshotListener
