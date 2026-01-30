@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "449342051656",
+    "project_id": "gestionpagos-90fcb",
+    "storage_bucket": "gestionpagos-90fcb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:449342051656:android:f39b307e4edf8da0fa0f7d",
+        "android_client_info": {
+          "package_name": "com.asperezg.gestionpagos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNslrE_6o1Owd_DtIBiJ2Kwd2MGum-1p4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
