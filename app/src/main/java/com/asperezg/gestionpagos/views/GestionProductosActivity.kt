@@ -1,6 +1,7 @@
 package com.asperezg.gestionpagos.views
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,51 +27,108 @@ class GestionProductosActivity : AppCompatActivity() {
         rvProductos = findViewById(R.id.rvProductosAdmin)
         val fabAdd = findViewById<FloatingActionButton>(R.id.fabAddProducto)
 
-        // Configuración del RecyclerView para mostrar el inventario
         rvProductos.layoutManager = LinearLayoutManager(this)
-        adapter = ProductAdapter(listaProductos)
+
+        // Inicializamos el adaptador con la función para EDITAR
+        adapter = ProductAdapter(listaProductos) { productoSeleccionado ->
+            mostrarDialogoEditar(productoSeleccionado)
+        }
         rvProductos.adapter = adapter
 
-        fabAdd.setOnClickListener {
-            mostrarDialogoCrear()
-        }
-
+        fabAdd.setOnClickListener { mostrarDialogoCrear() }
         consultarProductos()
     }
 
     private fun consultarProductos() {
-        // SnapshotListener mantiene la lista actualizada sin recargar la pantalla
         db.collection("Productos")
             .addSnapshotListener { value, error ->
                 if (error != null) return@addSnapshotListener
 
-                // ESTO ES VITAL: Limpia la lista actual para que no se acumule con la anterior
-                listaProductos.clear()
-
+                val listaNueva = mutableListOf<Product>()
                 if (value != null) {
                     for (doc in value) {
                         val producto = doc.toObject(Product::class.java)
-                        if (producto != null) {
-                            listaProductos.add(producto)
-                        }
+                        if (producto != null) listaNueva.add(producto)
                     }
-                    adapter.notifyDataSetChanged()
-                }
-
-
-                listaProductos.clear()
-                if (value != null) {
-                    for (doc in value) {
-                        // Mapeo automático de Firestore al modelo Product
-                        val producto = doc.toObject(Product::class.java)
-                        if (producto != null) {
-                            listaProductos.add(producto)
-                        }
-                    }
-                    adapter.notifyDataSetChanged()
+                    // Usamos la función del adaptador para evitar duplicados
+                    adapter.actualizarLista(listaNueva)
                 }
             }
+    }
 
+    private fun mostrarDialogoEditar(p: Product) {
+        val builder = androidx.appcompat.app.AlertDialog.Builder(this)
+        val vista = layoutInflater.inflate(R.layout.dialog_editar_producto, null)
+
+        // 1. Referencias de los campos de texto
+        val etNombre = vista.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etNombreEditProd)
+        val etPrecio = vista.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etPrecioEditProd)
+        val etStock = vista.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etStockEditProd)
+
+        // 2. Referencias de los botones del layout
+        val btnActualizar = vista.findViewById<Button>(R.id.btnActualizarProd)
+        val btnCancelar = vista.findViewById<Button>(R.id.btnCancelarEditProd)
+        val btnEliminar = vista.findViewById<Button>(R.id.btnEliminarProducto)
+
+        // 3. Cargar datos actuales del producto
+        etNombre.setText(p.nombre)
+        etPrecio.setText(p.precioContado.toString())
+        etStock.setText(p.stock.toString())
+
+        builder.setView(vista)
+        val dialogActual = builder.create()
+
+        // 4. Lógica del botón Actualizar
+        btnActualizar.setOnClickListener {
+            val nuevoNombre = etNombre.text.toString()
+            val nuevoPrecio = etPrecio.text.toString().toDoubleOrNull() ?: 0.0
+            val nuevoStock = etStock.text.toString().toIntOrNull() ?: 0
+
+            if (nuevoNombre.isNotEmpty() && nuevoPrecio > 0) {
+                db.collection("Productos").document(p.id)
+                    .update(mapOf(
+                        "nombre" to nuevoNombre,
+                        "precioContado" to nuevoPrecio,
+                        "stock" to nuevoStock
+                    ))
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Producto actualizado", Toast.LENGTH_SHORT).show()
+                        dialogActual.dismiss() // Cerramos el diálogo manualmente
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            } else {
+                Toast.makeText(this, "Por favor completa los campos correctamente", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // 5. Lógica del botón Cancelar
+        btnCancelar.setOnClickListener {
+            dialogActual.dismiss()
+        }
+
+        // 6. Lógica del botón Eliminar
+        btnEliminar.setOnClickListener {
+            confirmarEliminacion(p, dialogActual)
+        }
+
+        dialogActual.show()
+    }
+
+    private fun confirmarEliminacion(p: Product, editDialog: androidx.appcompat.app.AlertDialog) {
+        androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("¿Eliminar ${p.nombre}?")
+            .setMessage("Esta acción quitará el producto del inventario.")
+            .setPositiveButton("Eliminar") { _, _ ->
+                db.collection("Productos").document(p.id).delete()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Producto eliminado", Toast.LENGTH_SHORT).show()
+                        editDialog.dismiss() // Cierra el diálogo de edición
+                    }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun mostrarDialogoCrear() {
@@ -85,16 +143,10 @@ class GestionProductosActivity : AppCompatActivity() {
 
             if (nombre.isNotEmpty() && precio > 0) {
                 val docRef = db.collection("Productos").document()
-                // Creación del objeto Product con el ID generado
                 val p = Product(id = docRef.id, nombre = nombre, precioContado = precio, stock = stock)
-
                 docRef.set(p).addOnSuccessListener {
-                    Toast.makeText(this, "Producto '$nombre' guardado", Toast.LENGTH_SHORT).show()
-                }.addOnFailureListener { e ->
-                    Toast.makeText(this, "Error al guardar: ${e.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Producto guardado", Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(this, "Nombre y precio son obligatorios", Toast.LENGTH_SHORT).show()
             }
         }
         builder.setNegativeButton("Cancelar", null)

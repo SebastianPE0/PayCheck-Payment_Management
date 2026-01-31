@@ -55,7 +55,7 @@ class ClienteActivity : AppCompatActivity() {
                 Toast.makeText(this, "El carrito está vacío", Toast.LENGTH_SHORT).show()
             }
         }
-
+        cargarProductos()
 
 
     }
@@ -66,7 +66,12 @@ class ClienteActivity : AppCompatActivity() {
         db.collection("Productos").get()
             .addOnSuccessListener { result ->
                 val productos = result.toObjects(Product::class.java)
-                rv.adapter = ProductAdapter(productos)
+
+                // Pasamos la lista Y una función vacía para cumplir con el nuevo constructor
+                rv.adapter = ProductAdapter(productos) { producto ->
+                    // Por ahora no hace nada, o podrías mostrar un Toast con el nombre
+                    Toast.makeText(this, "Seleccionaste: ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                }
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Error al cargar productos", Toast.LENGTH_SHORT).show()
