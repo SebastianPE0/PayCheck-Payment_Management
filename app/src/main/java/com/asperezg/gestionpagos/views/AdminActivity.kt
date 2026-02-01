@@ -11,21 +11,40 @@ class AdminActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Esta línea es la que "prende" la vista
         setContentView(R.layout.activity_admin)
 
-        // 1. Vincular la tarjeta de Productos
-        val cardProductos = findViewById<MaterialCardView>(R.id.cardGestionProductos)
-        cardProductos.setOnClickListener {
-            val intent = Intent(this, GestionProductosActivity::class.java)
-            startActivity(intent)
-        }
-
-        // 2. Vincular la tarjeta de Clientes (Provisional)
+        // 1. Gestión de Clientes
         val cardClientes = findViewById<MaterialCardView>(R.id.cardGestionClientes)
         cardClientes.setOnClickListener {
-            val intent = Intent(this, GestionClientesActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, GestionClientesActivity::class.java))
+        }
+
+        // 2. Gestión de Productos
+        val cardProductos = findViewById<MaterialCardView>(R.id.cardGestionProductos)
+        cardProductos.setOnClickListener {
+            startActivity(Intent(this, GestionProductosActivity::class.java))
+        }
+
+        // 3. NUEVO: Aprobación de Compras (Solicitudes pendientes)
+        val cardAprobaciones = findViewById<MaterialCardView>(R.id.cardAprobaciones)
+        cardAprobaciones.setOnClickListener {
+            startActivity(Intent(this, AprobacionActivity::class.java))
+        }
+
+        // 4. Módulo de Deudores (Listado de deudas activas)
+        val cardDeudores = findViewById<MaterialCardView>(R.id.cardDeudores)
+        cardDeudores.setOnClickListener {
+            // Este módulo lo crearemos a continuación
+            //startActivity(Intent(this, DeudoresActivity::class.java))
+            Toast.makeText(this, "Módulo de Deudores en desarrollo", Toast.LENGTH_SHORT).show()
+        }
+
+        // 5. Historial de Pagos
+        val cardPagos = findViewById<MaterialCardView>(R.id.cardPagos)
+        cardPagos.setOnClickListener {
+            // Provisionalmente al mismo de deudores o un Toast
+            Toast.makeText(this, "Módulo de Pagos en desarrollo", Toast.LENGTH_SHORT).show()
+            //startActivity(Intent(this, PagosActivity::class.java))
         }
     }
 }

@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
         <activity
+            android:name=".views.CatalogoProductosActivity"
+            android:exported="false" />
+        <activity
+            android:name=".views.AprobacionActivity"
+            android:exported="false" />
+        <activity
             android:name=".views.GestionClientesActivity"
             android:exported="false" />
         <activity

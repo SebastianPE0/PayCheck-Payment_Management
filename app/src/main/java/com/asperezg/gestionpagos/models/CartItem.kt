@@ -1,8 +1,6 @@
 package com.asperezg.gestionpagos.models
 
 data class CartItem(
-    val productoId: String,
-    val nombre: String,
-    val precio: Double,
-    var cantidad: Int = 1
+    val producto: Product = Product(), // Debe tener un valor por defecto
+    var cantidad: Int = 0
 )

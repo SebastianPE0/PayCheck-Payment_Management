@@ -19,75 +19,91 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <GridLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:columnCount="2"
-        android:rowCount="2"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvAdminTitle">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardGestionClientes"
-            android:layout_width="0dp"
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
-            <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_myplaces"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Clientes" android:textStyle="bold" android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_margin="16dp"
+            android:columnCount="2"
+            android:alignmentMode="alignMargins">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardGestionProductos"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
-            <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_agenda"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Productos" android:textStyle="bold" android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardGestionClientes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="#3F51B5"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Clientes" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardDeudores"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
-            <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_dialog_alert"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Deudores" android:textStyle="bold" android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardGestionProductos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_agenda" app:tint="#4CAF50"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Productos" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cardPagos"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_rowWeight="1"
-            android:layout_columnWeight="1"
-            android:layout_margin="8dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp">
-            <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/btn_star_big_on"/>
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pagos" android:textStyle="bold" android:layout_marginTop="8dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardAprobaciones"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_send" app:tint="#FF9800"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Aprobaciones" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
-    </GridLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDeudores"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_dialog_alert" app:tint="#F44336"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Deudores" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardPagos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:layout_margin="8dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="6dp">
+                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
+                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/btn_star_big_on" app:tint="#9C27B0"/>
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pagos" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

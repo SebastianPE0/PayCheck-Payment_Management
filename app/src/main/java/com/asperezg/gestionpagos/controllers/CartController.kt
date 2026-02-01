@@ -1,24 +1,35 @@
 package com.asperezg.gestionpagos.controllers
+
 import com.asperezg.gestionpagos.models.CartItem
+import com.asperezg.gestionpagos.models.Product
 
 object CartController {
-    private val items = mutableListOf<CartItem>()
+    private val carrito = mutableListOf<CartItem>()
 
-    fun agregarProducto(nuevoItem: CartItem) {
-        // Si el producto ya está, solo sumamos la cantidad
-        val existente = items.find { it.productoId == nuevoItem.productoId }
-        if (existente != null) {
-            existente.cantidad += nuevoItem.cantidad
+    fun agregarAlCarrito(producto: Product) {
+        val itemExistente = carrito.find { it.producto.id == producto.id }
+        if (itemExistente != null) {
+            itemExistente.cantidad++
         } else {
-            items.add(nuevoItem)
+            carrito.add(CartItem(producto, 1))
         }
     }
 
-    fun obtenerItems(): List<CartItem> = items
+    // ESTA ES LA FUNCIÓN QUE FALTABA
+    fun eliminarDelCarrito(idProducto: String) {
+        val item = carrito.find { it.producto.id == idProducto }
+        if (item != null) {
+            carrito.remove(item)
+        }
+    }
 
-    fun obtenerTotal(): Double = items.sumOf { it.precio * it.cantidad }
+    fun obtenerItems(): List<CartItem> = carrito
+
+    fun obtenerTotal(): Double {
+        return carrito.sumOf { it.producto.precioContado * it.cantidad }
+    }
 
     fun limpiarCarrito() {
-        items.clear()
+        carrito.clear()
     }
 }
