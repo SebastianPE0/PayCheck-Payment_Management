@@ -1,9 +1,7 @@
 package com.asperezg.gestionpagos.views
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +16,7 @@ class CartActivity : AppCompatActivity() {
 
     private val db = FirebaseFirestore.getInstance()
     private val auth = FirebaseAuth.getInstance()
+    private lateinit var spinnerCuotas: Spinner // Selector de meses
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,13 +25,20 @@ class CartActivity : AppCompatActivity() {
         val rvCarrito = findViewById<RecyclerView>(R.id.rvCarrito)
         val tvTotal = findViewById<TextView>(R.id.tvTotalCarrito)
         val btnConfirmar = findViewById<Button>(R.id.btnConfirmarCredito)
+        spinnerCuotas = findViewById(R.id.spinnerCuotas)
+
+        // Configurar las opciones de cuotas (3, 6, 9, 12 meses)
+        val opcionesCuotas = arrayOf(1, 3, 6, 9, 12)
+        val adapterSpinner = ArrayAdapter(this, android.R.layout.simple_spinner_item, opcionesCuotas)
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCuotas.adapter = adapterSpinner
 
         fun actualizarUI() {
-            tvTotal.text = "Total a Solicitar: $${CartController.obtenerTotal()}"
+            val total = CartController.obtenerTotal()
+            tvTotal.text = "Total a Solicitar: $${String.format("%.2f", total)}"
         }
 
         rvCarrito.layoutManager = LinearLayoutManager(this)
-        // Pasamos la lista y la función para actualizar el total
         rvCarrito.adapter = CartAdapter(CartController.obtenerItems().toMutableList()) {
             actualizarUI()
         }
@@ -53,53 +59,55 @@ class CartActivity : AppCompatActivity() {
             return
         }
 
-        // 1. Validación de Stock Local previa para ahorrar recursos de red
+        // 1. Validación de Stock Local
         for (item in items) {
             if (item.cantidad > item.producto.stock) {
-                Toast.makeText(this, "No hay stock suficiente de ${item.producto.nombre} (Disponible: ${item.producto.stock})", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Stock insuficiente: ${item.producto.nombre}", Toast.LENGTH_LONG).show()
                 return
             }
         }
+
+        val cuotasSeleccionadas = spinnerCuotas.selectedItem as Int
+        val total = CartController.obtenerTotal()
+        val montoPorCuota = total / cuotasSeleccionadas // Cálculo del plan
 
         db.collection("Usuarios").document(uid).get().addOnSuccessListener { userDoc ->
             val nombre = userDoc.getString("nombre") ?: "Usuario"
             val correo = userDoc.getString("correo") ?: ""
 
-            // 2. Iniciamos un Batch para que la reserva y la solicitud sean una sola operación
+            // 2. Uso de Batch para asegurar la reserva de stock y creación de solicitud
             val batch = db.batch()
             val docSolicitudRef = db.collection("Solicitudes").document()
 
-            // 3. Reservar Stock: Descontamos de la colección Productos
+            // 3. Reservar Stock
             items.forEach { item ->
                 val productoRef = db.collection("Productos").document(item.producto.id)
-                // Calculamos el nuevo stock restando la cantidad solicitada
                 val nuevoStock = item.producto.stock - item.cantidad
                 batch.update(productoRef, "stock", nuevoStock)
             }
 
-            // 4. Crear el objeto de solicitud con ID del documento generado
+            // 4. Crear Solicitud con Plan de Pagos
             val nuevaSolicitud = Solicitud(
                 id = docSolicitudRef.id,
                 idCliente = uid,
                 nombreCliente = nombre,
                 correoCliente = correo,
                 productos = items,
-                total = CartController.obtenerTotal(),
-                estado = "pendiente"
+                total = total,
+                estado = "pendiente",
+                numeroCuotas = cuotasSeleccionadas, // Guardamos el plazo
+                montoCuota = montoPorCuota        // Guardamos la cuota mensual
             )
 
             batch.set(docSolicitudRef, nuevaSolicitud)
 
-            // 5. Ejecutar todas las operaciones juntas
             batch.commit().addOnSuccessListener {
-                Toast.makeText(this, "Solicitud enviada y stock reservado", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Solicitud enviada a $cuotasSeleccionadas meses", Toast.LENGTH_LONG).show()
                 CartController.limpiarCarrito()
                 finish()
             }.addOnFailureListener { e ->
-                Toast.makeText(this, "Error al procesar: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
         }
-
-
     }
 }

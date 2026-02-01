@@ -9,6 +9,7 @@ import com.asperezg.gestionpagos.R
 import com.asperezg.gestionpagos.adapters.AprobacionAdapter
 import com.asperezg.gestionpagos.models.Solicitud
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.Calendar
 
 class AprobacionActivity : AppCompatActivity() {
 
@@ -42,17 +43,11 @@ class AprobacionActivity : AppCompatActivity() {
                 }
 
                 if (value != null) {
-                    // Log para ver cuántos documentos encontró en bruto
-                    android.util.Log.d("FIREBASE_DEBUG", "Documentos encontrados: ${value.size()}")
-
                     try {
                         val nuevaLista = value.toObjects(Solicitud::class.java)
-                        // Log para ver cuántos objetos se convirtieron bien
-                        android.util.Log.d("FIREBASE_DEBUG", "Objetos convertidos: ${nuevaLista.size}")
                         adapter.actualizarLista(nuevaLista)
                     } catch (e: Exception) {
                         android.util.Log.e("FIREBASE_DEBUG", "Error de conversión: ${e.message}")
-                        e.printStackTrace() // Esto te dará el detalle exacto del error en el Logcat
                     }
                 }
             }
@@ -60,25 +55,58 @@ class AprobacionActivity : AppCompatActivity() {
 
     private fun gestionarSolicitud(s: Solicitud, nuevoEstado: String) {
         if (nuevoEstado == "rechazada") {
-            devolverStock(s) // Devolvemos lo reservado
+            devolverStock(s) // Si se rechaza, el stock vuelve al inventario
         }
 
         db.collection("Solicitudes").document(s.id).update("estado", nuevoEstado)
             .addOnSuccessListener {
                 if (nuevoEstado == "aprobada") {
+                    // Acción clave: Crear el plan de pagos antes de finalizar
+                    generarPlanDePagos(s)
                     db.collection("Usuarios").document(s.idCliente).update("tieneDeuda", true)
-                    Toast.makeText(this, "Venta confirmada", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Venta aprobada y plan de cuotas generado", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this, "Solicitud rechazada y stock devuelto", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
+    private fun generarPlanDePagos(s: Solicitud) {
+        val batch = db.batch()
+        val calendario = Calendar.getInstance()
+
+        // Creamos cada cuota según el plazo que el cliente eligió
+        for (i in 1..s.numeroCuotas) {
+            // Programamos los vencimientos cada 30 días
+            calendario.add(Calendar.DAY_OF_YEAR, 30)
+
+            val cuotaId = "${s.id}_cuota_$i"
+            val cuotaRef = db.collection("Deudas").document(cuotaId)
+
+            val datosCuota = hashMapOf(
+                "idSolicitud" to s.id,
+                "idCliente" to s.idCliente,
+                "nombreCliente" to s.nombreCliente,
+                "numeroCuota" to i,
+                "totalCuotas" to s.numeroCuotas,
+                "monto" to s.montoCuota,
+                "fechaVencimiento" to calendario.timeInMillis,
+                "estado" to "pendiente"
+            )
+
+            batch.set(cuotaRef, datosCuota)
+        }
+
+        batch.commit().addOnFailureListener {
+            android.util.Log.e("ERROR_PLAN", "Fallo al crear cuotas: ${it.message}")
+        }
+    }
+
     private fun devolverStock(s: Solicitud) {
         val batch = db.batch()
         s.productos.forEach { item ->
             val productoRef = db.collection("Productos").document(item.producto.id)
-            // Usamos FieldValue.increment para ser precisos con la suma
+            // FieldValue.increment devuelve el stock reservado al catálogo
             batch.update(productoRef, "stock", com.google.firebase.firestore.FieldValue.increment(item.cantidad.toLong()))
         }
         batch.commit()

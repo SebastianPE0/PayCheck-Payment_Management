@@ -4,46 +4,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#EDF1F7"
+    android:background="#F0F4F8"
     tools:context=".views.AdminActivity">
+
+    <View
+        android:id="@+id/viewHeader"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="#3F51B5"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvAdminTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:text="Panel Administrativo"
-        android:textSize="26sp"
+        android:textColor="@color/white"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gestión de Créditos y Cobros"
+        android:textColor="#C5CAE9"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvAdminTitle" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="-40dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvAdminTitle">
+        app:layout_constraintTop_toBottomOf="@id/viewHeader">
 
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:columnCount="2"
-            android:alignmentMode="alignMargins">
+            android:alignmentMode="alignMargins"
+            android:columnCount="2">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardGestionClientes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp">
-                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_myplaces" app:tint="#3F51B5"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Clientes" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@android:drawable/ic_menu_myplaces"
+                        app:tint="#3F51B5" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Clientes"
+                        android:textColor="#1A237E"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -51,13 +90,34 @@
                 android:id="@+id/cardGestionProductos"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp">
-                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_agenda" app:tint="#4CAF50"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Productos" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@android:drawable/ic_menu_agenda"
+                        app:tint="#4CAF50" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Productos"
+                        android:textColor="#1B5E20"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -65,13 +125,34 @@
                 android:id="@+id/cardAprobaciones"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp">
-                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_menu_send" app:tint="#FF9800"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Aprobaciones" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@android:drawable/ic_menu_send"
+                        app:tint="#FF9800" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Aprobaciones"
+                        android:textColor="#E65100"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -79,13 +160,34 @@
                 android:id="@+id/cardDeudores"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp">
-                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/ic_dialog_alert" app:tint="#F44336"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Deudores" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@android:drawable/ic_dialog_alert"
+                        app:tint="#F44336" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Deudores"
+                        android:textColor="#B71C1C"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -93,13 +195,34 @@
                 android:id="@+id/cardPagos"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="6dp">
-                <LinearLayout android:orientation="vertical" android:gravity="center" android:padding="16dp" android:layout_width="match_parent" android:layout_height="match_parent">
-                    <ImageView android:layout_width="64dp" android:layout_height="64dp" android:src="@android:drawable/btn_star_big_on" app:tint="#9C27B0"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pagos" android:textStyle="bold" android:layout_marginTop="8dp"/>
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <ImageView
+                        android:layout_width="56dp"
+                        android:layout_height="56dp"
+                        android:src="@android:drawable/ic_menu_camera"
+                        app:tint="#9C27B0" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Validar Pagos"
+                        android:textColor="#4A148C"
+                        android:textStyle="bold" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 

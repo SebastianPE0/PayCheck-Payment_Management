@@ -8,5 +8,8 @@ data class Solicitud(
     val productos: List<CartItem> = listOf(),
     val total: Double = 0.0,
     val estado: String = "pendiente",
-    val fecha: Long = 0L
+    val fecha: Long = 0L,
+    val numeroCuotas: Int = 1, // Por defecto 1 (contado)
+    val montoCuota: Double = 0.0
+
 )

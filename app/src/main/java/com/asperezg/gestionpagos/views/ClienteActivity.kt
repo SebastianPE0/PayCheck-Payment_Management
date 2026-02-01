@@ -47,8 +47,7 @@ class ClienteActivity : AppCompatActivity() {
         }
 
         cardMisDeudas.setOnClickListener {
-            // Reemplazar con MisDeudasActivity cuando se cree
-            Toast.makeText(this, "Módulo de Deudas en desarrollo", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MisDeudasActivity::class.java))
         }
 
         fabCarrito.setOnClickListener {
